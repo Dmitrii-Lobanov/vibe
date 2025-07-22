@@ -6,7 +6,7 @@ export async function getSandbox (sandboxId: string) {
   return sandbox;
 }
 
-export function lastAssistantTextMessageContent (result: AgentResult) {
+export function lastAssistantTextMessageContent (result: AgentResult): string | undefined {
   const lastAssistantTextMessageIndex = result.output.findLastIndex(
     (message) => message.role === 'assistant'
   )

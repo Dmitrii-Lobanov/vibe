@@ -51,10 +51,10 @@ export const helloWorld = inngest.createFunction(
                 return result.stdout;
               } catch (e) {
                 console.error(
-                  `Command failed: ${e} \nstdout: ${buffers.stdout}\nstderror: ${buffers.stderr}`
+                  `Command failed: ${e} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`
                 )
 
-                return `Command failed: ${e} \nstdout: ${buffers.stdout}\nstderror: ${buffers.stderr}`;
+                return `Command failed: ${e} \nstdout: ${buffers.stdout}\nstderr: ${buffers.stderr}`;
               }
             })
           },
@@ -64,15 +64,15 @@ export const helloWorld = inngest.createFunction(
           name: 'createOrUpdateFiles',
           description: 'Create or update files in the sandbox',
           parameters: z.object({
-            files: z.object({
+            files: z.array(z.object({
               path: z.string(),
               content: z.string()
-            })
+            }))
           }),
           handler: async ({ files }, { step, network }) => {
             const newFiles = await step?.run('createOrUpdateFiles', async () => {
               try {
-                const updatedFiles = network.state.data.files || [];
+                const updatedFiles = network.state.data.files || {};
 
                 const sandbox = await getSandbox(sandboxId);
 
@@ -139,7 +139,7 @@ export const helloWorld = inngest.createFunction(
       agents: [codeAgent],
       maxIter: 15,
       router: async ({ network }) => {
-        const summary = network. state.data.summary;
+        const summary = network.state.data.summary;
 
         if (summary) {
           return;
